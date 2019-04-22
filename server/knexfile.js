@@ -3,7 +3,7 @@ module.exports = {
     client: "postgresql",
     connection: {
       host: process.env.PGHOST,
-      database: process.env.PGDATABASE,
+      database: "graphql-react-gamesuite",
       user: process.env.DBUSER,
       password: process.env.PGPASSWORD
     },

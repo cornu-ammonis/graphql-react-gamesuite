@@ -14,6 +14,11 @@
     "pg": "^7.10.0"
   },
   "devDependencies": {
+    "nodemon": "^1.18.11",
     "run.env": "^1.1.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   }
 }
