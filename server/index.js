@@ -9,6 +9,7 @@ const { createServer } = require('http')
 const { PostgresPubSub } = require("graphql-postgres-subscriptions");
 
 
+
 const database = require('./database')
 
 const pubsub = new PostgresPubSub({
@@ -26,7 +27,7 @@ const typeDefs = gql`
   type Coinflip { id: Int!, isFlipped: Boolean!, heads: Boolean }
   type Query { newCoinflip: Coinflip }
   type Mutation { flipCoin(id: Int!): Boolean }
-  type Subscription { CoinflipGame(id: Int!): Coinflip }
+  type Subscription { coinFlipGame(id: Int!): Coinflip }
 `
 
 const resolvers = {
@@ -41,10 +42,27 @@ const resolvers = {
   Mutation: {
     flipCoin: async (id) => {
       const heads = Math.random() >= 0.5;
-      const [result] = await database('coinflip').where({id}).returning("heads").insert({ heads });
-      console.log(result);
+      const [result] = await database('coinflip').where({id}).returning("heads").insert({ heads, isFlipped: true });
+      
+      pubsub.publish(`coinFlipped${id}`, { id: 1, heads: heads, isFlipped: true} );
+
       return result;
     }
+  },
+  Subscription: {
+    coinFlipGame: {
+      subscribe: (id) => pubsub.asyncIterator(`coinFlipped${id}`),
+      resolve: payload => {
+        console.log(payload) // Shows following object:
+        /* {
+             id: 'cjnpwktwb008t0897dw5i78wt',
+             createdAt: '2018-10-26T10:58:05.531Z',
+           }
+        */
+        return payload
+      }
+    },
+    
   }
 }
 
@@ -52,6 +70,8 @@ const server = new ApolloServer({ typeDefs, resolvers });
 const app = express();
 server.applyMiddleware({ app });
 
+const httpServer = createServer(app);
+server.installSubscriptionHandlers(httpServer);
 
 /*
 const schema = makeExecutableSchema({
@@ -70,7 +90,11 @@ server.use(
   })
 ) */
 
-app.listen({ port: PORT }, () =>
-  console.log(`🚀 Server ready at http://localhost:3001${server.graphqlPath}`)
-)
+httpServer.listen({ port: 8000 }, () => {
+  console.log('Apollo Server on http://localhost:8000/graphql');
+});
+
+//app.listen({ port: PORT }, () =>
+//  console.log(`🚀 Server ready at http://localhost:3001${server.graphqlPath}`)
+//)
   
