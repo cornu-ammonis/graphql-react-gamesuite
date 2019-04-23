@@ -9,7 +9,6 @@ const { createServer } = require('http')
 const { PostgresPubSub } = require("graphql-postgres-subscriptions");
 
 
-
 const database = require('./database')
 
 const pubsub = new PostgresPubSub({
@@ -52,14 +51,9 @@ const resolvers = {
   Subscription: {
     coinFlipGame: {
       subscribe: (id) => pubsub.asyncIterator(`coinFlipped${id}`),
-      resolve: payload => {
-        console.log(payload) // Shows following object:
-        /* {
-             id: 'cjnpwktwb008t0897dw5i78wt',
-             createdAt: '2018-10-26T10:58:05.531Z',
-           }
-        */
-        return payload
+      resolve: cf => {
+        console.log(cf)
+        return cf
       }
     },
     
@@ -73,28 +67,7 @@ server.applyMiddleware({ app });
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-/*
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-})
-const server = express()
-
-server.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
-
-server.use(
-  '/graphiql',
-  graphiqlExpress({
-    endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://${HOST}:${PORT}/subscriptions`,
-  })
-) */
-
 httpServer.listen({ port: 8000 }, () => {
   console.log('Apollo Server on http://localhost:8000/graphql');
 });
 
-//app.listen({ port: PORT }, () =>
-//  console.log(`🚀 Server ready at http://localhost:3001${server.graphqlPath}`)
-//)
-  
