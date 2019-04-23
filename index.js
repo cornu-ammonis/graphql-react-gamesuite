@@ -12,7 +12,7 @@ const path = require('path');
 
 
 const database = require('./database')
-const argsForPubSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production ') ?
+const argsForPubSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production') ?
   { connectionString: process.env.DATABASE_URL } :
   {
     user: process.env.USER,
