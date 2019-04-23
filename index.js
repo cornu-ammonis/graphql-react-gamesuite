@@ -62,7 +62,7 @@ const resolvers = {
   }
 }
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, subscriptions: { keepAlive: 10000 } });
 const app = express();
 
 app.use(express.static(path.join(__dirname, '/client/build')));
