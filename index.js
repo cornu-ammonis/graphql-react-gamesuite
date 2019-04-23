@@ -12,14 +12,18 @@ const path = require('path');
 
 
 const database = require('./database')
+const argForPupSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production ') ?
+  { connectionString: process.env.DATABASE_URL } :
+  {
+    user: process.env.USER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT,
+  };
 
-const pubsub = new PostgresPubSub({
-  user: process.env.USER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
-})
+console.log(process.env.NODE_ENV)
+const pubsub = new PostgresPubSub(argForPupSub);
 
 const PORT = process.env.PORT || 8000
 const HOST = process.env.HOST || 'localhost'
