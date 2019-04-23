@@ -66,13 +66,14 @@ const server = new ApolloServer({ typeDefs, resolvers });
 const app = express();
 
 app.use(express.static(path.join(__dirname, '/client/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
+
 server.applyMiddleware({ app });
 
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
 httpServer.listen({ port: 8000 }, () => {
   console.log('Apollo Server on http://localhost:8000/graphql');
