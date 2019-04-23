@@ -12,7 +12,7 @@ const path = require('path');
 
 
 const database = require('./database')
-const argForPupSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production ') ?
+const argForPubSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production ') ?
   { connectionString: process.env.DATABASE_URL } :
   {
     user: process.env.USER,
@@ -22,8 +22,8 @@ const argForPupSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'producti
     port: process.env.PGPORT,
   };
 
-console.log(process.env.NODE_ENV)
-const pubsub = new PostgresPubSub(argForPupSub);
+console.log(argsForPubSub)
+const pubsub = new PostgresPubSub(argForPubSub);
 
 const PORT = process.env.PORT || 8000
 const HOST = process.env.HOST || 'localhost'
@@ -40,7 +40,6 @@ const resolvers = {
     newCoinflipSession: async () => {
       const result = await database('coinflip').insert({ isFlipped: false }).returning(['id', 'isFlipped'])
       const { id, isFlipped } = result[0] ;
-      console.log(process.env.PGDATABASE)
       return { id, isFlipped} ;
     },
   },
@@ -48,7 +47,7 @@ const resolvers = {
     flipCoin: async (id) => {
       const heads = Math.random() >= 0.5;
       const [result] = await database('coinflip').where({id}).returning("heads").insert({ heads, isFlipped: true });
-      
+      console.log('made it to publish');
       pubsub.publish(`coinFlipped${id}`, { id: 1, heads: heads, isFlipped: true} );
 
       return result;
