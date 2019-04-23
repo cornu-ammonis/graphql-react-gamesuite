@@ -1,9 +1,20 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Coin from './Coin';
 
 class App extends Component {
+  
   render() {
+    const route = window.location.pathname.split('/')[1];
+
+    if (route === 'coin')
+      return (
+        <div className="App">
+          <Coin/>
+        </div>
+      );
+
     return (
       <div className="App">
         <header className="App-header">
