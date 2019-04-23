@@ -10,6 +10,17 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import { ApolloLink } from "apollo-link";
+import { WebSocketLink } from "apollo-link-ws";
+
+const host = process.env.REACT_APP_HOST || 'http://localhost:3001';
+const wshost = process.env.REACT_APP_WS_HOST || 'ws://localhost:3001'
+
+const wsLink = new WebSocketLink({
+  uri: `${wshost}/graphql`,
+  options: {
+    reconnect: true
+  }
+});
 
 const client = new ApolloClient({
   link: ApolloLink.from([
@@ -22,6 +33,7 @@ const client = new ApolloClient({
         );
       if (networkError) console.log(`[Network error]: ${networkError}`);
     }),
+    wsLink,
     new HttpLink({
       uri: "http://localhost:3001/graphql",
       credentials: "same-origin"
@@ -51,7 +63,7 @@ const GetCoinflipQuery = ({children}) => (
       
         console.log(data)
     
-      return children(data.id)
+      return children(data.newCoinflipSession.id)
     }}
   </Query>
 );
