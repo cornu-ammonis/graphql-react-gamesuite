@@ -12,7 +12,7 @@ const path = require('path');
 
 
 const database = require('./database')
-const argForPubSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production ') ?
+const argsForPubSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'production ') ?
   { connectionString: process.env.DATABASE_URL } :
   {
     user: process.env.USER,
@@ -23,7 +23,7 @@ const argForPubSub = (process.env.NODE_ENV && process.env.NODE_ENV === 'producti
   };
 
 console.log(argsForPubSub)
-const pubsub = new PostgresPubSub(argForPubSub);
+const pubsub = new PostgresPubSub(argsForPubSub);
 
 const PORT = process.env.PORT || 8000
 const HOST = process.env.HOST || 'localhost'
