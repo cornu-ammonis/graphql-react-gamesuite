@@ -61,6 +61,7 @@ const Coin = props => {
     <span>
       <CoinflipSubscription id={id}/>
       <FlipCoin id={id}/>
+      <a href={`/coin/${id}`}> Copy Link To Share </a>
     </span>
   );
 };
