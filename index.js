@@ -44,18 +44,18 @@ const resolvers = {
     },
   },
   Mutation: {
-    flipCoin: async (id) => {
+    flipCoin: async (obj, {id}) => {
       const heads = Math.random() >= 0.5;
       const [result] = await database('coinflip').where({id}).returning("heads").insert({ heads, isFlipped: true });
-      console.log('made it to publish');
-      pubsub.publish(`coinFlipped${id}`, { id: 1, heads: heads, isFlipped: true} );
+      
+      pubsub.publish(`coinFlipped${id}`, { id: id, heads: heads, isFlipped: true} );
 
       return result;
     }
   },
   Subscription: {
     coinFlipGame: {
-      subscribe: (id) => pubsub.asyncIterator(`coinFlipped${id}`),
+      subscribe: (obj, {id} ) => pubsub.asyncIterator(`coinFlipped${id}`),
       resolve: cf => {
         console.log(cf)
         return cf
