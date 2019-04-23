@@ -16,6 +16,26 @@ const COINFLIP_SUBSCRIPTION = gql`
     }
   `
 
+const DO_COINFLIP_MUTATION = gql`
+    mutation DoCoinflipMutation($id: Int!) {
+      flipCoin(id: $id)
+    }
+`
+
+const FlipCoin = ({id}) => {
+  return (
+    <Mutation mutation={DO_COINFLIP_MUTATION} variables={ {id} }>
+      {(flip) => (
+        <div>
+          <button onClick={() => flip()}>
+            Flip Coin
+          </button>
+        </div>
+      )}
+    </Mutation>
+  );
+}
+
 const CoinflipSubscription = ({id}) => (
   <Subscription
     subscription={COINFLIP_SUBSCRIPTION}
@@ -38,7 +58,10 @@ const Coin = props => {
 
 
   return (
-    <CoinflipSubscription id={id}/>
+    <span>
+      <CoinflipSubscription id={id}/>
+      <FlipCoin id={id}/>
+    </span>
   );
 };
 

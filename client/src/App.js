@@ -72,20 +72,24 @@ class App extends Component {
   
   render() {
     const route = window.location.pathname.split('/')[1];
-
-    if (route === 'coin')
+    
+    if (route === 'coin') {
+      const id = parseInt( window.location.pathname.split('/')[2] );
       return (
         <ApolloProvider client={client}>
           <div className="App">
-            <Coin/>
+            <Coin id={id}/>
           </div>
         </ApolloProvider>
       );
+    }
 
     if (route === 'newCoin') {
      return( 
       <ApolloProvider client={client}>
-        <GetCoinflipQuery>{id => <Coin id={id}/>}</GetCoinflipQuery>
+        <div className="App">
+          <GetCoinflipQuery>{id => <Coin id={id}/>}</GetCoinflipQuery>
+        </div>
       </ApolloProvider>
      );
     }
