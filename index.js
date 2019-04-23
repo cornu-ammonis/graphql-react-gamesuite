@@ -21,7 +21,7 @@ const pubsub = new PostgresPubSub({
   port: process.env.PGPORT,
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 8000
 const HOST = process.env.HOST || 'localhost'
 
 const typeDefs = gql`
@@ -75,7 +75,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
-httpServer.listen({ port: 8000 }, () => {
+httpServer.listen({ port: PORT }, () => {
   console.log('Apollo Server on http://localhost:8000/graphql');
 });
 
