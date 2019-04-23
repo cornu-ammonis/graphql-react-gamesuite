@@ -24,14 +24,14 @@ const HOST = process.env.HOST || 'localhost'
 
 const typeDefs = gql`
   type Coinflip { id: Int!, isFlipped: Boolean!, heads: Boolean }
-  type Query { newCoinflip: Coinflip }
+  type Query { newCoinflipSession: Coinflip }
   type Mutation { flipCoin(id: Int!): Boolean }
   type Subscription { coinFlipGame(id: Int!): Coinflip }
 `
 
 const resolvers = {
   Query: {
-    newCoinflip: async () => {
+    newCoinflipSession: async () => {
       const result = await database('coinflip').insert({ isFlipped: false }).returning(['id', 'isFlipped'])
       const { id, isFlipped } = result[0] ;
       console.log(process.env.PGDATABASE)
